@@ -1,5 +1,5 @@
 import Categories from '@pages/categories'
-import Dashboard from '@pages/dashboard'
+import Home from '@pages/Home'
 import NotFound from '@pages/not-found'
 import Orders from '@pages/orders'
 import Products from '@pages/products'
@@ -13,7 +13,7 @@ import { routes } from './type'
 
 const publicRoutes: Array<routes> = [
   { path: '/categories', component: Categories },
-  { path: '/', component: Dashboard },
+  { path: '/', component: Home },
   { path: '/orders', component: Orders },
   { path: '/products', component: Products },
   { path: '/reviews', component: Reviews },
