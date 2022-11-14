@@ -1,24 +1,14 @@
-import Categories from '@pages/categories'
-import Home from '@pages/Home'
+import Home from '@pages/home'
+import ProductDetail from '@pages/product-detail'
 import NotFound from '@pages/not-found'
-import Orders from '@pages/orders'
-import Products from '@pages/products'
-import Reviews from '@pages/reviews'
-import Users from '@pages/users'
-import Vendors from '@pages/vendors'
-import Signup from '@pages/signup'
 import Signin from '@pages/signin'
+import Signup from '@pages/signup'
 import { SignUpIn } from '@features/layout'
 import { routes } from './type'
 
 const publicRoutes: Array<routes> = [
-  { path: '/categories', component: Categories },
   { path: '/', component: Home },
-  { path: '/orders', component: Orders },
-  { path: '/products', component: Products },
-  { path: '/reviews', component: Reviews },
-  { path: '/users', component: Users },
-  { path: '/vendors', component: Vendors },
+  { path: '/product-detail', component: ProductDetail },
   { path: '/signup', component: Signup, layout: SignUpIn },
   { path: '/signin', component: Signin, layout: SignUpIn },
   { path: '/*', component: NotFound },

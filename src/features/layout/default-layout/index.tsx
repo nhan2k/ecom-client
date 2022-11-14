@@ -12,7 +12,9 @@ const DefaultLayout: React.FunctionComponent<defaultLayout> = ({ children }) => 
   return (
     <div className={cx('body-layout')}>
       <Header />
-      <Container maxWidth="xl">{children}</Container>
+      <Container maxWidth="xl" style={{ marginTop: '5rem' }}>
+        {children}
+      </Container>
       <Footer />
     </div>
   )

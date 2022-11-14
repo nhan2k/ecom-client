@@ -19,6 +19,7 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+  boxShadow: 'none',
 }))
 
 const Home: React.FunctionComponent<IHome> = () => {
@@ -30,7 +31,7 @@ const Home: React.FunctionComponent<IHome> = () => {
   }
   const productState = useAppSelector(getProductState)
   const categoryState = useAppSelector(getCategoryState)
-  console.log('🚀 ~ file: index.tsx ~ line 24 ~ categoryState', categoryState)
+
   React.useEffect(() => {
     let flag = true
     if (flag) {
@@ -49,14 +50,28 @@ const Home: React.FunctionComponent<IHome> = () => {
               Category
             </Typography>
           </Grid>
+          {categoryState.getAllLoading === 'pending' ? (
+            <Box sx={{ display: 'flex' }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <React.Fragment />
+          )}
           {categoryState.getAllLoading === 'succeeded' ? (
             categoryState.dataGetAll.map((element: any, index: number) => {
               return (
                 <Grid xs={12} sm={12} md={6} lg={4} xl={3} key={index}>
                   <Item>
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card sx={{ maxWidth: '100%', maxHeight: 345 }}>
                       <CardActionArea>
-                        <CardMedia component="img" height="140" image="/static/images/cards/contemplative-reptile.jpg" alt="green iguana" />
+                        <CardMedia
+                          component="img"
+                          height="200px"
+                          width="100%"
+                          image={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.content.img}`}
+                          crossOrigin="anonymous"
+                          alt="green iguana"
+                        />
                         <CardContent>
                           <Typography gutterBottom variant="h5" component="div">
                             {element.title}
@@ -68,6 +83,66 @@ const Home: React.FunctionComponent<IHome> = () => {
                 </Grid>
               )
             })
+          ) : (
+            <React.Fragment />
+          )}
+          {categoryState.getAllLoading === 'failed' ? (
+            <Typography gutterBottom variant="h5" component="div">
+              {categoryState.getAllError}
+            </Typography>
+          ) : (
+            <React.Fragment />
+          )}
+        </Grid>
+      </Box>
+
+      <Box sx={{ width: '100%' }}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid xs={12} sm={12} md={12} lg={12} xl={12}>
+            <Typography gutterBottom variant="h1" component="div" align="center">
+              Product
+            </Typography>
+          </Grid>
+          {productState.getAllLoading === 'pending' ? (
+            <Box sx={{ display: 'flex' }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <React.Fragment />
+          )}
+          {productState.getAllLoading === 'succeeded' ? (
+            productState.dataGetAll.map((element: any, index: number) => {
+              return (
+                <Grid xs={12} sm={12} md={6} lg={4} xl={3} key={index}>
+                  <Item>
+                    <Card sx={{ maxWidth: '100%', maxHeight: 345 }}>
+                      <CardActionArea>
+                        <CardMedia
+                          component="img"
+                          height="200px"
+                          width="100%"
+                          image={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.content.img}`}
+                          crossOrigin="anonymous"
+                          alt="green iguana"
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="div">
+                            {element.title}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </Item>
+                </Grid>
+              )
+            })
+          ) : (
+            <React.Fragment />
+          )}
+          {productState.getAllLoading === 'failed' ? (
+            <Typography gutterBottom variant="h5" component="div">
+              {productState.getAllError}
+            </Typography>
           ) : (
             <React.Fragment />
           )}
