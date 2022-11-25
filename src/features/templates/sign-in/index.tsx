@@ -100,13 +100,7 @@ export default function SignIn() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  {...register('password', {
-                    required: true,
-                    minLength: {
-                      value: 5,
-                      message: 'Min length is 5',
-                    },
-                  })}
+                  {...register('password')}
                   id="password"
                   label="Password"
                   name="password"

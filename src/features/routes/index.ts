@@ -4,16 +4,18 @@ import NotFound from '@pages/not-found'
 import Signin from '@pages/signin'
 import Signup from '@pages/signup'
 import { SignUpIn } from '@features/layout'
-import { routes } from './type'
+import { IRoutes } from './type'
+import Cart from '@/pages/cart'
 
-const publicRoutes: Array<routes> = [
-  { path: '/', component: Home },
-  { path: '/product-detail', component: ProductDetail },
-  { path: '/signup', component: Signup, layout: SignUpIn },
-  { path: '/signin', component: Signin, layout: SignUpIn },
-  { path: '/*', component: NotFound },
+const publicRoutes: Array<IRoutes> = [
+  { path: '/', component: Home, isPublic: true },
+  { path: '/cart', component: Cart, isPublic: true },
+  { path: '/product-detail', component: ProductDetail, isPublic: true },
+  { path: '/signup', component: Signup, layout: SignUpIn, isPublic: true },
+  { path: '/signin', component: Signin, layout: SignUpIn, isPublic: true },
+  { path: '/*', component: NotFound, isPublic: true },
 ]
 
-const privateRoutes: Array<routes> = []
+const privateRoutes: Array<IRoutes> = []
 
 export { publicRoutes, privateRoutes }

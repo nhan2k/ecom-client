@@ -1,16 +1,10 @@
-import { privateHTTP, IDataResponse } from '@features/utils/axios'
+import { privateHTTP, IDataResponse, publicHTTP } from '@features/utils/axios'
 import { getItem } from '@features/utils/local.storage'
 import { IDataProduct } from './type'
 
 const getAllProduct = async (): Promise<IDataResponse> => {
   try {
-    const user = getItem('user')
-    const token = user !== null ? user.accessToken : ''
-    const response = await privateHTTP.get('/product', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const response = await publicHTTP.get('/product')
     return response.data
   } catch (error: any) {
     return error.response.data
@@ -18,7 +12,7 @@ const getAllProduct = async (): Promise<IDataResponse> => {
 }
 const countProduct = async (): Promise<IDataResponse> => {
   try {
-    const user = getItem('user')
+    const user = getItem('client')
     const token = user !== null ? user.accessToken : ''
     const response = await privateHTTP.get('/product/count', {
       headers: {
@@ -33,7 +27,7 @@ const countProduct = async (): Promise<IDataResponse> => {
 
 const getOneProduct = async (id: number): Promise<IDataResponse> => {
   try {
-    const user = getItem('user')
+    const user = getItem('client')
     const token = user !== null ? user.accessToken : ''
     const response = await privateHTTP.get(`/product/${id}`, {
       headers: {
@@ -48,7 +42,7 @@ const getOneProduct = async (id: number): Promise<IDataResponse> => {
 
 const createProduct = async (data: IDataProduct): Promise<IDataResponse> => {
   try {
-    const user = getItem('user')
+    const user = getItem('client')
     const token = user !== null ? user.accessToken : ''
     const response = await privateHTTP.post('/product', data, {
       headers: {
@@ -63,7 +57,7 @@ const createProduct = async (data: IDataProduct): Promise<IDataResponse> => {
 
 const putProduct = async (data: IDataProduct, id: number): Promise<IDataResponse> => {
   try {
-    const user = getItem('user')
+    const user = getItem('client')
     const token = user !== null ? user.accessToken : ''
     const response = await privateHTTP.put(`/product/${id}`, data, {
       headers: {
@@ -78,7 +72,7 @@ const putProduct = async (data: IDataProduct, id: number): Promise<IDataResponse
 
 const deleteProduct = async (id: number): Promise<IDataResponse> => {
   try {
-    const user = getItem('user')
+    const user = getItem('client')
     const token = user !== null ? user.accessToken : ''
     const response = await privateHTTP.delete(`/product/${id}`, {
       headers: {

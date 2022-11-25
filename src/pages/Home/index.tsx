@@ -10,6 +10,8 @@ import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks'
 import { experimentalStyled as styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Unstable_Grid2'
+import notFoundImg from '@assets/images/not-found-img.jpg'
+import { Link } from 'react-router-dom'
 
 interface IHome {}
 
@@ -68,7 +70,7 @@ const Home: React.FunctionComponent<IHome> = () => {
                           component="img"
                           height="200px"
                           width="100%"
-                          image={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.content.img}`}
+                          image={element.content.img !== 'undefined' ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.content.img}` : notFoundImg}
                           crossOrigin="anonymous"
                           alt="green iguana"
                         />
@@ -114,25 +116,27 @@ const Home: React.FunctionComponent<IHome> = () => {
             productState.dataGetAll.map((element: any, index: number) => {
               return (
                 <Grid xs={12} sm={12} md={6} lg={4} xl={3} key={index}>
-                  <Item>
-                    <Card sx={{ maxWidth: '100%', maxHeight: 345 }}>
-                      <CardActionArea>
-                        <CardMedia
-                          component="img"
-                          height="200px"
-                          width="100%"
-                          image={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.content.img}`}
-                          crossOrigin="anonymous"
-                          alt="green iguana"
-                        />
-                        <CardContent>
-                          <Typography gutterBottom variant="h5" component="div">
-                            {element.title}
-                          </Typography>
-                        </CardContent>
-                      </CardActionArea>
-                    </Card>
-                  </Item>
+                  <Link to={`/product-detail?id=${element.id}`}>
+                    <Item>
+                      <Card sx={{ maxWidth: '100%', maxHeight: 345 }}>
+                        <CardActionArea>
+                          <CardMedia
+                            component="img"
+                            height="200px"
+                            width="100%"
+                            image={element.content.img !== 'undefined' ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.content.img}` : `${notFoundImg}`}
+                            crossOrigin="anonymous"
+                            alt="green iguana"
+                          />
+                          <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                              {element.title}
+                            </Typography>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
+                    </Item>
+                  </Link>
                 </Grid>
               )
             })
