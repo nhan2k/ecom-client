@@ -17,8 +17,10 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout'
 import notFoundImg from '@assets/images/not-found-img.jpg'
-import { useSearchParams } from 'react-router-dom'
-import { setCountIncrement } from '@/features/redux/slices/cart'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { createCartItemAsyncThunk } from '@/features/redux/slices/cart-item'
+import { countCartAsyncThunk } from '@/features/redux/slices/cart'
+import { getAuthState } from '@/features/redux/slices/auth'
 
 interface IProductDetail {}
 
@@ -40,11 +42,16 @@ const ProductDetail: React.FunctionComponent<IProductDetail> = () => {
   React.useMemo(() => {
     dispatch(getOneProductAsyncThunk(id))
   }, [])
-
+  const navigate = useNavigate()
   const { dataGetOne, getOneLoading, getOneError } = useAppSelector(getProductState)
+  const { auth } = useAppSelector(getAuthState)
 
-  const handleAddToCart = () => {
-    dispatch(setCountIncrement())
+  const handleAddToCart = async () => {
+    if (!auth) {
+      return navigate('/signin')
+    }
+    await dispatch(createCartItemAsyncThunk(id))
+    await dispatch(countCartAsyncThunk())
   }
 
   return (
@@ -79,7 +86,6 @@ const ProductDetail: React.FunctionComponent<IProductDetail> = () => {
                       width="100%"
                       height="400px"
                       image={dataGetOne.findProduct.content.img ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.findProduct.content.img}` : `${notFoundImg}`}
-                      crossOrigin="anonymous"
                       alt="green iguana"
                     />
                   </Item>

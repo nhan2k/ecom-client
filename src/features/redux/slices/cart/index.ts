@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ICartState, IDataCart } from './type'
+import { ICartState, IDataCart, CartItem } from './type'
 import { RootState } from '@features/redux/store'
-import { getAllCart, getOneCart, createCart, putCart, deleteCart, countCart } from './cart.service'
+import { getAllCart, getOneCart, createCart, putCart, deleteCart, countCart, getPersonCart, updateCart, removeItemCart } from './cart.service'
 
 const prefixType = 'cart'
 const getAllCartAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, thunkAPI) => {
@@ -53,25 +53,50 @@ const deleteCartAsyncThunk = createAsyncThunk(`${prefixType}/delete`, async (id:
   }
 })
 
+const getPersonCartAsyncThunk = createAsyncThunk(`${prefixType}/personCart`, async (_, thunkAPI) => {
+  try {
+    const dataResponse = await getPersonCart()
+    return dataResponse
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+const updateCartAsyncThunk = createAsyncThunk(`${prefixType}/update/qty`, async ({ data, id }: { data: { quantity: number }; id: number }, thunkAPI) => {
+  try {
+    const dataResponse = await updateCart(data, id)
+    return dataResponse
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+const removeItemCartAsyncThunk = createAsyncThunk(`${prefixType}/remove/item`, async ({ data, id }: { data: CartItem; id: number }, thunkAPI) => {
+  try {
+    const dataResponse = await removeItemCart(id)
+    return dataResponse
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+
 const initialState: ICartState = {
-  dataInput: {
-    sessionId: '',
-    token: '',
-  },
   dataGetAll: [],
   count: 0,
   dataGetOne: {},
+  personCart: {},
   getAllLoading: 'idle',
   getOneLoading: 'idle',
   countLoading: 'idle',
   postLoading: 'idle',
   putLoading: 'idle',
   deleteLoading: 'idle',
+  personCartLoading: 'idle',
   getAllError: '',
   getOneError: '',
   postError: '',
   putError: '',
+  countError: '',
   deleteError: '',
+  personCartError: '',
 }
 
 const cartSlice = createSlice({
@@ -80,42 +105,6 @@ const cartSlice = createSlice({
   reducers: {
     resetCartState: () => {
       return initialState
-    },
-    setSessionId: (state, action) => {
-      return {
-        ...state,
-        dataInput: {
-          ...state.dataInput,
-          sessionId: action.payload,
-        },
-      }
-    },
-    setToken: (state, action) => {
-      return {
-        ...state,
-        dataInput: {
-          ...state.dataInput,
-          token: action.payload,
-        },
-      }
-    },
-    setCountIncrement: (state) => {
-      return {
-        ...state,
-        count: state.count + 1,
-      }
-    },
-    setCountDecrement: (state, action) => {
-      return {
-        ...state,
-        count: state.count === 0 ? 0 : state.count--,
-      }
-    },
-    setCount: (state, action: PayloadAction<number>) => {
-      return {
-        ...state,
-        count: action.payload,
-      }
     },
   },
   extraReducers(builder) {
@@ -267,10 +256,114 @@ const cartSlice = createSlice({
         deleteError: action.payload.data.message,
       }
     })
+
+    builder.addCase(countCartAsyncThunk.fulfilled, (state: ICartState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        countLoading: 'succeeded',
+        count: action.payload.data,
+      }
+    })
+    builder.addCase(countCartAsyncThunk.pending, (state: ICartState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        countLoading: 'pending',
+      }
+    })
+    builder.addCase(countCartAsyncThunk.rejected, (state: ICartState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        countLoading: 'failed',
+        countError: action.payload.data.message,
+      }
+    })
+
+    builder.addCase(getPersonCartAsyncThunk.fulfilled, (state: ICartState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        personCartLoading: 'succeeded',
+        personCart: action.payload.data,
+      }
+    })
+    builder.addCase(getPersonCartAsyncThunk.pending, (state: ICartState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        personCartLoading: 'pending',
+      }
+    })
+    builder.addCase(getPersonCartAsyncThunk.rejected, (state: ICartState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        personCartLoading: 'failed',
+        personCartError: action.payload.data.message,
+      }
+    })
+
+    builder.addCase(updateCartAsyncThunk.fulfilled, (state: any, action: PayloadAction<any>) => {
+      if (!action.payload.isSuccess) {
+        return {
+          ...state,
+          personCartLoading: 'failed',
+          putError: action.payload.data.message,
+        }
+      }
+      let id = action.payload.data.id
+
+      return {
+        ...state,
+        personCartLoading: 'succeeded',
+        personCart: state.personCart.CartItemModels ? state.personCart.CartItemModels.map((element: any) => (element.id === id ? action.payload.data : element)) : {},
+      }
+    })
+    builder.addCase(updateCartAsyncThunk.pending, (state: any, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        personCartLoading: 'pending',
+      }
+    })
+    builder.addCase(updateCartAsyncThunk.rejected, (state: any, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        personCartLoading: 'failed',
+        personCartError: action.payload.data.message,
+      }
+    })
+
+    builder.addCase(removeItemCartAsyncThunk.fulfilled, (state: any, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        personCartLoading: 'succeeded',
+        personCart: action.payload.data,
+      }
+    })
+    builder.addCase(removeItemCartAsyncThunk.pending, (state: any, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        personCartLoading: 'pending',
+      }
+    })
+    builder.addCase(removeItemCartAsyncThunk.rejected, (state: any, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        personCartLoading: 'failed',
+        personCartError: action.payload.data.message,
+      }
+    })
   },
 })
 
-export { getAllCartAsyncThunk, getOneCartAsyncThunk, createCartAsyncThunk, putCartAsyncThunk, deleteCartAsyncThunk, countCartAsyncThunk }
+export {
+  getAllCartAsyncThunk,
+  getOneCartAsyncThunk,
+  createCartAsyncThunk,
+  putCartAsyncThunk,
+  deleteCartAsyncThunk,
+  countCartAsyncThunk,
+  getPersonCartAsyncThunk,
+  updateCartAsyncThunk,
+  removeItemCartAsyncThunk,
+  getPersonCart,
+}
 export const getCartState = (state: RootState) => state.cartSlice
-export const { resetCartState, setSessionId, setToken, setCount, setCountDecrement, setCountIncrement } = cartSlice.actions
+export const { resetCartState } = cartSlice.actions
 export default cartSlice

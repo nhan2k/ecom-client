@@ -49,9 +49,9 @@ export default function SignIn() {
 
   const onSubmit: SubmitHandler<IFormInput> = async () => {
     await dispatch(signinAsyncThunk({ email, password }))
-  }
-  if (loading === 'succeeded') {
-    navigate('/')
+    if (loading === 'succeeded') {
+      return navigate('/')
+    }
   }
 
   return (

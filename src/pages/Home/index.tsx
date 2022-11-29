@@ -34,7 +34,7 @@ const Home: React.FunctionComponent<IHome> = () => {
   const productState = useAppSelector(getProductState)
   const categoryState = useAppSelector(getCategoryState)
 
-  React.useEffect(() => {
+  React.useMemo(() => {
     let flag = true
     if (flag) {
       getAllHome()
@@ -44,7 +44,7 @@ const Home: React.FunctionComponent<IHome> = () => {
     }
   }, [])
   return (
-    <>
+    <React.Fragment>
       <Box sx={{ width: '100%' }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -71,7 +71,6 @@ const Home: React.FunctionComponent<IHome> = () => {
                           height="200px"
                           width="100%"
                           image={element.content.img !== 'undefined' ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.content.img}` : notFoundImg}
-                          crossOrigin="anonymous"
                           alt="green iguana"
                         />
                         <CardContent>
@@ -125,7 +124,6 @@ const Home: React.FunctionComponent<IHome> = () => {
                             height="200px"
                             width="100%"
                             image={element.content.img !== 'undefined' ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.content.img}` : `${notFoundImg}`}
-                            crossOrigin="anonymous"
                             alt="green iguana"
                           />
                           <CardContent>
@@ -152,7 +150,7 @@ const Home: React.FunctionComponent<IHome> = () => {
           )}
         </Grid>
       </Box>
-    </>
+    </React.Fragment>
   )
 }
 

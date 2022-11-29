@@ -16,7 +16,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks'
 import { getAuthState, resetAuthState, signoutAsyncThunk } from '@/features/redux/slices/auth'
 import { removeItem } from '@/features/utils/local.storage'
-import { Divider, ListItemIcon } from '@mui/material'
+import { CircularProgress, Divider, ListItemIcon } from '@mui/material'
 import LoginIcon from '@mui/icons-material/Login'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import Badge, { BadgeProps } from '@mui/material/Badge'
@@ -41,6 +41,7 @@ function ResponsiveAppBar() {
 
   const dispatch = useAppDispatch()
   const { count, countLoading } = useAppSelector(getCartState)
+  const { auth } = useAppSelector(getAuthState)
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -75,10 +76,10 @@ function ResponsiveAppBar() {
   }
 
   React.useMemo(() => {
-    dispatch(countCartAsyncThunk())
+    if (auth) {
+      dispatch(countCartAsyncThunk())
+    }
   }, [])
-
-  const { auth } = useAppSelector(getAuthState)
 
   return (
     <AppBar position="static" style={{ backgroundColor: '#1A94FF' }}>
@@ -89,7 +90,7 @@ function ResponsiveAppBar() {
             <Typography
               variant="h6"
               noWrap
-              component="a"
+              component="p"
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
@@ -170,13 +171,18 @@ function ResponsiveAppBar() {
                   <Typography sx={{ minWidth: 50 }}>
                     <NotificationsIcon fontSize={'large'} />
                   </Typography>
-                  <Link to="/cart">
-                    <IconButton aria-label="cart">
-                      <StyledBadge badgeContent={count} color="secondary">
-                        <ShoppingCartIcon fontSize={'large'} style={{ color: 'white' }} />
-                      </StyledBadge>
-                    </IconButton>
-                  </Link>
+
+                  {countLoading === 'pending' ? (
+                    <CircularProgress />
+                  ) : (
+                    <Link to="/cart">
+                      <IconButton aria-label="cart">
+                        <StyledBadge badgeContent={countLoading === 'succeeded' ? count : 0} color="secondary">
+                          <ShoppingCartIcon fontSize={'large'} style={{ color: 'white' }} />
+                        </StyledBadge>
+                      </IconButton>
+                    </Link>
+                  )}
                   <Tooltip title="Account settings">
                     <IconButton
                       onClick={handleClick}

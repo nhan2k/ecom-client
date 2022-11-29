@@ -1,16 +1,17 @@
-import { combineReducers } from '@reduxjs/toolkit';
-import authSlice from '@features/redux/slices/auth';
-import cartSlice from '@features/redux/slices/cart';
-import productSlice from '@features/redux/slices/product';
-import categorySlice from '@features/redux/slices/category';
-import productCategorySlice from '@features/redux/slices/product-category';
-import userSlice from '@features/redux/slices/user';
-import productMetaSlice from '@features/redux/slices/product-meta';
-import orderSlice from '@features/redux/slices/order';
-import tagSlice from '@features/redux/slices/tag';
-import productReviewSlice from '@features/redux/slices/product-review';
-import ProductTagSlice from '@features/redux/slices/product-tag';
-import TransactionSlice from '@features/redux/slices/transaction';
+import { combineReducers } from '@reduxjs/toolkit'
+import authSlice from '@features/redux/slices/auth'
+import cartSlice from '@features/redux/slices/cart'
+import productSlice from '@features/redux/slices/product'
+import categorySlice from '@features/redux/slices/category'
+import productCategorySlice from '@features/redux/slices/product-category'
+import userSlice from '@features/redux/slices/user'
+import productMetaSlice from '@features/redux/slices/product-meta'
+import orderSlice from '@features/redux/slices/order'
+import tagSlice from '@features/redux/slices/tag'
+import productReviewSlice from '@features/redux/slices/product-review'
+import ProductTagSlice from '@features/redux/slices/product-tag'
+import TransactionSlice from '@features/redux/slices/transaction'
+import cartItemSlice from '@features/redux/slices/cart-item'
 
 const rootReducer = combineReducers({
   [authSlice.name]: authSlice.reducer,
@@ -25,5 +26,6 @@ const rootReducer = combineReducers({
   [productReviewSlice.name]: productReviewSlice.reducer,
   [ProductTagSlice.name]: ProductTagSlice.reducer,
   [TransactionSlice.name]: TransactionSlice.reducer,
-});
-export default rootReducer;
+  [cartItemSlice.name]: cartItemSlice.reducer,
+})
+export default rootReducer

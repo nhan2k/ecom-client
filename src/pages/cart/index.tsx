@@ -3,6 +3,7 @@ import classNames from 'classnames/bind'
 import style from './Cart.module.scss'
 import { Container, Typography } from '@mui/material'
 import LocalMallIcon from '@mui/icons-material/LocalMall'
+import Items from './Items'
 
 interface ICartProps {}
 
@@ -17,9 +18,12 @@ const Cart: React.FunctionComponent<ICartProps> = (props) => {
             <LocalMallIcon color="primary" sx={{ fontSize: 50 }} />
           </div>
           <div className={cx('title')}>
-            <Typography variant="h4">Giỏ Hàng</Typography>
+            <Typography variant="h4" component={'p'}>
+              Giỏ Hàng
+            </Typography>
           </div>
         </div>
+        <Items />
       </Container>
     </>
   )

@@ -1,4 +1,22 @@
-interface IDataCart {
+import { IDataProduct } from '@features/redux/slices/product/type'
+
+export interface CartItem {
+  id?: number
+  productId?: number
+  cartId?: number
+  sku?: string
+  price?: number
+  discount?: number
+  quantity?: number
+  active?: number
+  createdAt?: Date
+  content?: { img?: string }
+  updatedAt?: Date
+  deletedAt?: Date
+  ProductModel: IDataProduct
+}
+
+export interface IDataCart {
   id?: string
   userId?: string
   sessionId?: string
@@ -18,18 +36,14 @@ interface IDataCart {
   content?: string
   updatedAt?: string
   deletedAt?: string
-}
-
-interface IDataInput {
-  sessionId: string
-  token: string
+  CartItemModels?: CartItem[]
 }
 
 type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed'
 
 interface ICartState {
-  dataInput: IDataInput
   dataGetAll: IDataCart[]
+  personCart: IDataCart
   count: number
   countLoading: TLoading
   dataGetOne: IDataCart
@@ -38,11 +52,14 @@ interface ICartState {
   postLoading: TLoading
   putLoading: TLoading
   deleteLoading: TLoading
+  personCartLoading: TLoading
   getAllError: string
   getOneError: string
   postError: string
   putError: string
+  countError: string
   deleteError: string
+  personCartError: string
 }
 
 export { IDataCart, IDataSignin, IAuth, TLoading, ICartState }
