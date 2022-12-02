@@ -17,11 +17,11 @@ const getAllUser = async (): Promise<IDataResponse> => {
   }
 }
 
-const getOneUser = async (id: number): Promise<IDataResponse> => {
+const getOneUser = async (): Promise<IDataResponse> => {
   try {
     const user = getItem('client')
     const token = user !== null ? user.accessToken : ''
-    const response = await privateHTTP.get(`/user/${id}`, {
+    const response = await privateHTTP.get(`/user/profile`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

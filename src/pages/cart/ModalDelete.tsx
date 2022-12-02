@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { IconButton, Stack } from '@mui/material'
 import { useAppDispatch } from '@/features/hooks/reduxHooks'
 import { deleteCartItemAsyncThunk, getAllCartItemAsyncThunk } from '@/features/redux/slices/cart-item'
+import { countCartAsyncThunk } from '@/features/redux/slices/cart'
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -31,6 +32,7 @@ const ModalDelete: React.FC<IModalDelete> = ({ id }) => {
 
   const handleDelete = async () => {
     await dispatch(deleteCartItemAsyncThunk(id))
+    await dispatch(countCartAsyncThunk())
     await dispatch(getAllCartItemAsyncThunk())
   }
 

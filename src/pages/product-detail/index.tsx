@@ -102,7 +102,7 @@ const ProductDetail: React.FunctionComponent<IProductDetail> = () => {
                       </Typography>
 
                       <Typography gutterBottom variant="h2" component="div" align="left">
-                        {dataGetOne.findProduct.price} VND
+                        ${dataGetOne.findProduct.price}
                       </Typography>
 
                       <Box style={{ display: 'flex', justifyContent: 'flex-start' }}>

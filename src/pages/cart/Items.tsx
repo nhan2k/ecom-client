@@ -5,6 +5,8 @@ import { Button, Checkbox, Stack, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks'
 import { getAllCartItemAsyncThunk, getCartItemState } from '@/features/redux/slices/cart-item'
 import ModalDelete from './ModalDelete'
+import StoreIcon from '@mui/icons-material/Store'
+import { pink } from '@mui/material/colors'
 
 const cx = classname.bind(style)
 
@@ -13,16 +15,18 @@ function Items() {
   const { getItemsForShop, getAllLoading, getAllError } = useAppSelector(getCartItemState)
 
   React.useMemo(async () => {
-    await dispatch(getAllCartItemAsyncThunk())
+    if (getAllLoading === 'idle') {
+      await dispatch(getAllCartItemAsyncThunk())
+    }
   }, [])
   const keys = getAllLoading === 'succeeded' ? Object.keys(getItemsForShop) : []
 
   return (
     <React.Fragment>
       <div className={cx('header')}>
-        <div>
+        {/* <div>
           <Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 28, margin: 'auto' } }} />
-        </div>
+        </div> */}
         <div className={cx('product')}>
           <Typography component="div" variant="h4">
             Product
@@ -56,7 +60,8 @@ function Items() {
             return (
               <React.Fragment key={index}>
                 <div className={cx('shop')}>
-                  <Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 28, margin: 'auto' } }} />
+                  {/* <Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 28, margin: 'auto' } }} /> */}
+                  <StoreIcon sx={{ fontSize: 40, color: pink[500] }} />
                   <Typography component="div" variant="h4">
                     {element}
                   </Typography>
@@ -64,11 +69,15 @@ function Items() {
                 {getItemsForShop[element].map((data: any, index: number) => {
                   return (
                     <div className={cx('header')} key={index}>
-                      <div>
-                        <Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 28, margin: 'auto' } }} />
-                      </div>
+                      {/* <div>
+                        <Checkbox 
+                        sx={{ '& .MuiSvgIcon-root': { fontSize: 28, margin: 'auto' } }}
+                        name={data.ProductModel.title}
+                        id={`${index}`}
+                         onChange={handleChecked}/>
+                      </div> */}
                       <div className={cx('product')}>
-                        <Typography component="div" variant="h4">
+                        <Typography component="div" variant="h4" style={{ display: 'flex', alignItems: 'center' }}>
                           {data.ProductModel.title}
                         </Typography>
                         <img src={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${data.ProductModel.content.img}`} alt="" style={{ maxWidth: '10rem', alignItems: 'center' }} />
@@ -101,11 +110,6 @@ function Items() {
       ) : (
         <React.Fragment />
       )}
-      <Stack spacing={2} direction="row" style={{ justifyContent: 'flex-end' }}>
-        <Button variant="contained" size="large">
-          Checkout
-        </Button>
-      </Stack>
     </React.Fragment>
   )
 }

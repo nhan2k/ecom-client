@@ -22,9 +22,9 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import Badge, { BadgeProps } from '@mui/material/Badge'
 import { styled } from '@mui/material/styles'
 import { countCartAsyncThunk, getCartState } from '@/features/redux/slices/cart'
+import { getUserState, getOneUserAsyncThunk } from '@/features/redux/slices/user'
 
 const pages = ['Products', 'Pricing', 'Blog']
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -37,11 +37,20 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
 
   const dispatch = useAppDispatch()
+  const { dataGetOne, getOneLoading } = useAppSelector(getUserState)
   const { count, countLoading } = useAppSelector(getCartState)
   const { auth } = useAppSelector(getAuthState)
+
+  React.useMemo(async () => {
+    if (getOneLoading === 'idle') {
+      await dispatch(getOneUserAsyncThunk())
+    }
+    if (auth) {
+      dispatch(countCartAsyncThunk())
+    }
+  }, [])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -54,8 +63,6 @@ function ResponsiveAppBar() {
   const [open, setOpen] = React.useState(true)
   const navigate = useNavigate()
 
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null)
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const openMenu = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -67,7 +74,6 @@ function ResponsiveAppBar() {
 
   const handleSingout = (event: React.SyntheticEvent) => {
     event.preventDefault()
-    // call api logout
     dispatch(signoutAsyncThunk())
     dispatch(resetAuthState())
     removeItem('client')
@@ -75,14 +81,8 @@ function ResponsiveAppBar() {
     navigate('/')
   }
 
-  React.useMemo(() => {
-    if (auth) {
-      dispatch(countCartAsyncThunk())
-    }
-  }, [])
-
   return (
-    <AppBar position="static" style={{ backgroundColor: '#1A94FF' }}>
+    <AppBar position="static" style={{ backgroundColor: '#F8492F' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -106,7 +106,7 @@ function ResponsiveAppBar() {
           </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleOpenNavMenu} color="inherit">
+            <IconButton size="large" onClick={handleOpenNavMenu} color="inherit">
               <MenuIcon />
             </IconButton>
             <Menu
@@ -127,8 +127,8 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+              {pages.map((page, index) => (
+                <MenuItem key={index} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -154,8 +154,8 @@ function ResponsiveAppBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
+            {pages.map((page, index) => (
+              <Button key={index} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
                 {page}
               </Button>
             ))}
@@ -172,12 +172,19 @@ function ResponsiveAppBar() {
                     <NotificationsIcon fontSize={'large'} />
                   </Typography>
 
-                  {countLoading === 'pending' ? (
-                    <CircularProgress />
+                  {countLoading === 'pending' ? <CircularProgress /> : <></>}
+                  {countLoading === 'succeeded' ? (
+                    <Link to="/cart">
+                      <IconButton aria-label="cart">
+                        <StyledBadge badgeContent={count} color="secondary">
+                          <ShoppingCartIcon fontSize={'large'} style={{ color: 'white' }} />
+                        </StyledBadge>
+                      </IconButton>
+                    </Link>
                   ) : (
                     <Link to="/cart">
                       <IconButton aria-label="cart">
-                        <StyledBadge badgeContent={countLoading === 'succeeded' ? count : 0} color="secondary">
+                        <StyledBadge badgeContent={0} color="secondary">
                           <ShoppingCartIcon fontSize={'large'} style={{ color: 'white' }} />
                         </StyledBadge>
                       </IconButton>
@@ -192,7 +199,7 @@ function ResponsiveAppBar() {
                       aria-haspopup="true"
                       aria-expanded={open ? 'true' : undefined}
                     >
-                      <Avatar sx={{ width: 32, height: 32 }}>N</Avatar>
+                      {getOneLoading === 'succeeded' ? <Avatar sx={{ width: 32, height: 32 }} src={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.content.img}`} /> : <></>}
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -231,25 +238,14 @@ function ResponsiveAppBar() {
                   transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                   anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
-                  <MenuItem>
-                    <Avatar /> Profile
-                  </MenuItem>
-                  <MenuItem>
-                    <Avatar /> My account
-                  </MenuItem>
+                  <Link to={'/profile'}>
+                    <MenuItem>
+                      <Avatar /> Profile
+                    </MenuItem>
+                  </Link>
+
                   <Divider />
-                  <MenuItem>
-                    <ListItemIcon>
-                      <PersonAdd fontSize="small" />
-                    </ListItemIcon>
-                    Add another account
-                  </MenuItem>
-                  <MenuItem>
-                    <ListItemIcon>
-                      <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
-                  </MenuItem>
+
                   <MenuItem onClick={handleSingout}>
                     <ListItemIcon>
                       <Logout fontSize="small" />

@@ -3,7 +3,7 @@ import { useAppSelector } from '../hooks/reduxHooks'
 import { getAuthState } from '@features/redux/slices/auth'
 import { Navigate } from 'react-router-dom'
 
-type TRole = 'VENDOR' | 'ADMIN'
+type TRole = 'USER'
 
 interface IProtectedRouteProps {
   children: JSX.Element

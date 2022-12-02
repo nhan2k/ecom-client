@@ -4,12 +4,20 @@ import style from './Cart.module.scss'
 import { Container, Typography } from '@mui/material'
 import LocalMallIcon from '@mui/icons-material/LocalMall'
 import Items from './Items'
+import { Button, Stack } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 interface ICartProps {}
 
 const cx = classNames.bind(style)
 
 const Cart: React.FunctionComponent<ICartProps> = (props) => {
+  const navigate = useNavigate()
+
+  const handleCheckout = () => {
+    navigate('/checkout')
+  }
+
   return (
     <>
       <Container maxWidth="lg">
@@ -24,6 +32,11 @@ const Cart: React.FunctionComponent<ICartProps> = (props) => {
           </div>
         </div>
         <Items />
+        <Stack spacing={2} direction="row" style={{ justifyContent: 'flex-end' }}>
+          <Button variant="contained" size="large" onClick={handleCheckout}>
+            Checkout
+          </Button>
+        </Stack>
       </Container>
     </>
   )

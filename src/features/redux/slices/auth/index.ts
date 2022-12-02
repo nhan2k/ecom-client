@@ -42,6 +42,7 @@ const initialState: IAuthState = {
   loadingSignup: 'idle',
   errorSignup: '',
   auth: getItem('client') !== null ? true : false,
+  role: getItem('client') !== null ? 'USER' : undefined,
 }
 
 const authSlice = createSlice({

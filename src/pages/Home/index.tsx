@@ -130,6 +130,9 @@ const Home: React.FunctionComponent<IHome> = () => {
                             <Typography gutterBottom variant="h5" component="div">
                               {element.title}
                             </Typography>
+                            <Typography gutterBottom variant="h6" component="div">
+                              ${element.price}
+                            </Typography>
                           </CardContent>
                         </CardActionArea>
                       </Card>

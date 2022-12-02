@@ -18,14 +18,14 @@ type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed'
 interface ICartItemState {
   dataGetAll: IDataCartItem[]
   getItemsForShop: any
-  dataGetOne: IDataCartItem
+  dataGetForReviews: IDataCartItem[]
   getAllLoading: TLoading
-  getOneLoading: TLoading
+  getForReviewsLoading: TLoading
   postLoading: TLoading
   putLoading: TLoading
   deleteLoading: TLoading
   getAllError: string
-  getOneError: string
+  getForReviewsError: string
   postError: string
   putError: string
   deleteError: string

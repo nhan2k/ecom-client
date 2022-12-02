@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ICartItemState, IDataCartItem } from './type'
 import { RootState } from '@features/redux/store'
-import { getAllCartItem, getOneCartItem, createCartItem, putCartItem, deleteCartItem } from './cart-item.service'
+import { getAllCartItem, getCartItemsReviews, createCartItem, putCartItem, deleteCartItem } from './cart-item.service'
 
 const prefixType = 'cartItem'
 const getAllCartItemAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, thunkAPI) => {
@@ -12,9 +12,9 @@ const getAllCartItemAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async 
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
-const getOneCartItemAsyncThunk = createAsyncThunk(`${prefixType}/getOne`, async (id: number, thunkAPI) => {
+const getCartItemsForReviews = createAsyncThunk(`${prefixType}/getForReviews`, async (_, thunkAPI) => {
   try {
-    const dataResponse = await getOneCartItem(id)
+    const dataResponse = await getCartItemsReviews()
     return dataResponse
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error)
@@ -48,14 +48,14 @@ const deleteCartItemAsyncThunk = createAsyncThunk(`${prefixType}/delete`, async 
 const initialState: ICartItemState = {
   dataGetAll: [],
   getItemsForShop: {},
-  dataGetOne: {},
+  dataGetForReviews: [],
   getAllLoading: 'idle',
-  getOneLoading: 'idle',
+  getForReviewsLoading: 'idle',
   postLoading: 'idle',
   putLoading: 'idle',
   deleteLoading: 'idle',
   getAllError: '',
-  getOneError: '',
+  getForReviewsError: '',
   postError: '',
   putError: '',
   deleteError: '',
@@ -115,32 +115,32 @@ const cartItemSlice = createSlice({
       }
     })
 
-    builder.addCase(getOneCartItemAsyncThunk.pending, (state: ICartItemState) => {
+    builder.addCase(getCartItemsForReviews.pending, (state: ICartItemState) => {
       return {
         ...state,
-        getOneLoading: 'pending',
+        getForReviewsLoading: 'pending',
       }
     })
-    builder.addCase(getOneCartItemAsyncThunk.fulfilled, (state: ICartItemState, action: PayloadAction<IDataCartItem | any>) => {
+    builder.addCase(getCartItemsForReviews.fulfilled, (state: ICartItemState, action: PayloadAction<IDataCartItem | any>) => {
       if (!action.payload.isSuccess) {
         return {
           ...state,
-          getOneLoading: 'failed',
-          getOneError: action.payload.data.message,
+          getForReviewsLoading: 'failed',
+          getForReviewsError: action.payload.data.message,
         }
       }
 
       return {
         ...state,
-        getOneLoading: 'succeeded',
-        dataGetAll: action.payload.data,
+        getForReviewsLoading: 'succeeded',
+        dataGetForReviews: action.payload.data,
       }
     })
-    builder.addCase(getOneCartItemAsyncThunk.rejected, (state: ICartItemState, action: PayloadAction<any>) => {
+    builder.addCase(getCartItemsForReviews.rejected, (state: ICartItemState, action: PayloadAction<any>) => {
       return {
         ...state,
-        getOneLoading: 'failed',
-        getOneError: action.payload.data.message,
+        getForReviewsLoading: 'failed',
+        getForReviewsError: action.payload.data.message,
       }
     })
 
@@ -237,7 +237,7 @@ const cartItemSlice = createSlice({
   },
 })
 
-export { getAllCartItemAsyncThunk, getOneCartItemAsyncThunk, createCartItemAsyncThunk, putCartItemAsyncThunk, deleteCartItemAsyncThunk }
+export { getAllCartItemAsyncThunk, getCartItemsForReviews, createCartItemAsyncThunk, putCartItemAsyncThunk, deleteCartItemAsyncThunk }
 export const getCartItemState = (state: RootState) => state.cartItemSlice
 export const { resetCartItemState, setSessionId, setToken } = cartItemSlice.actions
 export default cartItemSlice

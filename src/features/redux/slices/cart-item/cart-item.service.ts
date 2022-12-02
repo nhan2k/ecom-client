@@ -17,11 +17,11 @@ const getAllCartItem = async (): Promise<IDataResponse> => {
   }
 }
 
-const getOneCartItem = async (id: number): Promise<IDataResponse> => {
+const getCartItemsReviews = async (): Promise<IDataResponse> => {
   try {
     const user = getItem('client')
     const token = user !== null ? user.accessToken : ''
-    const response = await privateHTTP.get(`/cart-item/${id}`, {
+    const response = await privateHTTP.get(`/cart-item/reviews`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -81,4 +81,4 @@ const deleteCartItem = async (id: number): Promise<IDataResponse> => {
   }
 }
 
-export { getAllCartItem, getOneCartItem, createCartItem, putCartItem, deleteCartItem }
+export { getAllCartItem, getCartItemsReviews, createCartItem, putCartItem, deleteCartItem }
