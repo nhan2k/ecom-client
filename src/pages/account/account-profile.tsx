@@ -2,6 +2,7 @@ import { useAppSelector } from '@/features/hooks/reduxHooks'
 import { getUserState } from '@/features/redux/slices/user'
 import { Avatar, Box, Button, Card, CardActions, CardContent, Divider, Typography } from '@mui/material'
 import * as React from 'react'
+import NoAvatar from '@assets/images/no-avatar.jpg'
 
 interface IAccountProfile {}
 const AccountProfile: React.FC<IAccountProfile> = () => {
@@ -19,14 +20,12 @@ const AccountProfile: React.FC<IAccountProfile> = () => {
         >
           {getOneLoading === 'succeeded' ? (
             <>
-              <Avatar
-                src={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.content.img}`}
-                sx={{
-                  height: 64,
-                  mb: 2,
-                  width: 64,
-                }}
-              />
+              {dataGetOne.content ? (
+                <Avatar sx={{ height: 64, mb: 2, width: 64 }} src={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.content.img}`} />
+              ) : (
+                <Avatar sx={{ height: 64, mb: 2, width: 64 }} src={NoAvatar} />
+              )}
+
               <Typography color="textPrimary" gutterBottom variant="h5">
                 {`${dataGetOne.firstName} ${dataGetOne.lastName}`}
               </Typography>

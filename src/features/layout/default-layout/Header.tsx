@@ -23,6 +23,7 @@ import Badge, { BadgeProps } from '@mui/material/Badge'
 import { styled } from '@mui/material/styles'
 import { countCartAsyncThunk, getCartState } from '@/features/redux/slices/cart'
 import { getUserState, getOneUserAsyncThunk } from '@/features/redux/slices/user'
+import NoAvatar from '@assets/images/no-avatar.jpg'
 
 const pages = ['Products', 'Pricing', 'Blog']
 
@@ -199,7 +200,11 @@ function ResponsiveAppBar() {
                       aria-haspopup="true"
                       aria-expanded={open ? 'true' : undefined}
                     >
-                      {getOneLoading === 'succeeded' ? <Avatar sx={{ width: 32, height: 32 }} src={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.content.img}`} /> : <></>}
+                      {dataGetOne.content ? (
+                        <Avatar sx={{ width: 32, height: 32 }} src={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.content.img}`} />
+                      ) : (
+                        <Avatar sx={{ width: 32, height: 32 }} src={NoAvatar} />
+                      )}
                     </IconButton>
                   </Tooltip>
                 </Box>
