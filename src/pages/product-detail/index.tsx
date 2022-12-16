@@ -85,7 +85,7 @@ const ProductDetail: React.FunctionComponent<IProductDetail> = () => {
                       component="img"
                       width="100%"
                       height="400px"
-                      image={dataGetOne.findProduct.content.img ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.findProduct.content.img}` : `${notFoundImg}`}
+                      image={dataGetOne.findProduct.image ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.findProduct.image}` : `${notFoundImg}`}
                       alt="green iguana"
                     />
                   </Item>
@@ -93,7 +93,7 @@ const ProductDetail: React.FunctionComponent<IProductDetail> = () => {
                 <Grid xs={7} sm={7} md={7} lg={7} xl={7}>
                   <Item>
                     <FormControl>
-                      <Typography gutterBottom variant="h1" component="div" align="left">
+                      <Typography gutterBottom variant="h2" component="div" align="left">
                         {dataGetOne.findProduct.title}
                       </Typography>
 
@@ -101,12 +101,12 @@ const ProductDetail: React.FunctionComponent<IProductDetail> = () => {
                         <TextRating value={dataGetOne.rating} />
                       </Typography>
 
-                      <Typography gutterBottom variant="h2" component="div" align="left">
+                      <Typography gutterBottom variant="h3" component="div" align="left">
                         ${dataGetOne.findProduct.price}
                       </Typography>
 
                       <Box style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <FormLabel style={{ fontSize: '4rem' }}>Meta key :</FormLabel>
+                        <FormLabel style={{ fontSize: '3rem' }}>Meta key :</FormLabel>
                         <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group" style={{ marginLeft: '2rem' }}>
                           {dataGetOne.findProduct.ProductMetaModels.map((element: any, index: number) => {
                             return (

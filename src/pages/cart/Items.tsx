@@ -1,7 +1,7 @@
 import * as React from 'react'
 import style from './Items.module.scss'
 import classname from 'classnames/bind'
-import { Button, Checkbox, Stack, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks'
 import { getAllCartItemAsyncThunk, getCartItemState } from '@/features/redux/slices/cart-item'
 import ModalDelete from './ModalDelete'
@@ -15,9 +15,7 @@ function Items() {
   const { getItemsForShop, getAllLoading, getAllError } = useAppSelector(getCartItemState)
 
   React.useMemo(async () => {
-    if (getAllLoading === 'idle') {
-      await dispatch(getAllCartItemAsyncThunk())
-    }
+    await dispatch(getAllCartItemAsyncThunk())
   }, [])
   const keys = getAllLoading === 'succeeded' ? Object.keys(getItemsForShop) : []
 
@@ -80,7 +78,7 @@ function Items() {
                         <Typography component="div" variant="h4" style={{ display: 'flex', alignItems: 'center' }}>
                           {data.ProductModel.title}
                         </Typography>
-                        <img src={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${data.ProductModel.content.img}`} alt="" style={{ maxWidth: '10rem', alignItems: 'center' }} />
+                        <img src={`${process.env.REACT_APP_API_PUBLIC_IMAGE}/${data.ProductModel.image}`} alt="" style={{ maxWidth: '10rem', alignItems: 'center' }} />
                       </div>
                       <div className={cx('unit-price')}>
                         <Typography component="div" variant="h4">

@@ -21,6 +21,7 @@ interface IAuthState {
   lastName: string
   email: string
   password: string
+  mobile: string
   auth: boolean
   loading: TLoading
   token?: string

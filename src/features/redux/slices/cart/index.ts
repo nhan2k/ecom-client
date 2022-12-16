@@ -12,9 +12,9 @@ const getAllCartAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, 
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
-const getOneCartAsyncThunk = createAsyncThunk(`${prefixType}/getOne`, async (id: number, thunkAPI) => {
+const getOneCartAsyncThunk = createAsyncThunk(`${prefixType}/getOne`, async (_, thunkAPI) => {
   try {
-    const dataResponse = await getOneCart(id)
+    const dataResponse = await getOneCart()
     return dataResponse
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error)
@@ -97,6 +97,7 @@ const initialState: ICartState = {
   countError: '',
   deleteError: '',
   personCartError: '',
+  payment: 'Cash',
 }
 
 const cartSlice = createSlice({
@@ -105,6 +106,18 @@ const cartSlice = createSlice({
   reducers: {
     resetCartState: () => {
       return initialState
+    },
+    setPayment: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        payment: action.payload,
+      }
+    },
+    resetCount: (state) => {
+      return {
+        ...state,
+        count: 0,
+      }
     },
   },
   extraReducers(builder) {
@@ -155,7 +168,7 @@ const cartSlice = createSlice({
       return {
         ...state,
         getOneLoading: 'succeeded',
-        dataGetAll: action.payload.data,
+        dataGetOne: action.payload.data,
       }
     })
     builder.addCase(getOneCartAsyncThunk.rejected, (state: ICartState, action: PayloadAction<any>) => {
@@ -365,5 +378,5 @@ export {
   getPersonCart,
 }
 export const getCartState = (state: RootState) => state.cartSlice
-export const { resetCartState } = cartSlice.actions
+export const { resetCartState, setPayment, resetCount } = cartSlice.actions
 export default cartSlice

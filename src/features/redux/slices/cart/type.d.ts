@@ -60,6 +60,7 @@ interface ICartState {
   countError: string
   deleteError: string
   personCartError: string
+  payment: string
 }
 
 export { IDataCart, IDataSignin, IAuth, TLoading, ICartState }

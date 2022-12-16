@@ -1,6 +1,6 @@
 import { privateHTTP, publicHTTP, IDataResponse } from '@features/utils/axios'
 import { getItem } from '@features/utils/local.storage'
-import { CartItem, IDataCart } from './type'
+import { IDataCart } from './type'
 
 const getAllCart = async (): Promise<IDataResponse> => {
   try {
@@ -17,11 +17,11 @@ const getAllCart = async (): Promise<IDataResponse> => {
   }
 }
 
-const getOneCart = async (id: number): Promise<IDataResponse> => {
+const getOneCart = async (): Promise<IDataResponse> => {
   try {
     const user = getItem('client')
     const token = user !== null ? user.accessToken : ''
-    const response = await privateHTTP.get(`/cart/${id}`, {
+    const response = await privateHTTP.get(`/cart/getOne`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

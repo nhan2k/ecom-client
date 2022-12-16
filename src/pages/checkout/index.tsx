@@ -12,44 +12,58 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import AddressForm from './AddressForm'
 import PaymentForm from './PaymentForm'
 import Review from './Review'
-import { getOneUserAsyncThunk, getUserState } from '@/features/redux/slices/user'
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks'
+import { getCartState, getOneCartAsyncThunk, resetCount } from '@/features/redux/slices/cart'
+import { checkoutAsyncThunk, getCheckoutState } from '@/features/redux/slices/checkout'
+import ModalCheckout from './ModalCheckout'
+import { Link } from 'react-router-dom'
 
 const steps = ['Shipping address', 'Payment details', 'Review your order']
-
-function getStepContent(step: number) {
-  switch (step) {
-    case 0:
-      return <AddressForm />
-    case 1:
-      return <PaymentForm />
-    case 2:
-      return <Review />
-    default:
-      throw new Error('Unknown step')
-  }
-}
 
 const theme = createTheme()
 
 export default function Checkout() {
   const dispatch = useAppDispatch()
-  const { getOneLoading } = useAppSelector(getUserState)
+  const { dataCheckout, orderId, checkoutError, checkoutLoading } = useAppSelector(getCheckoutState)
+  const cartState = useAppSelector(getCartState)
+
+  const [open, setOpen] = React.useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   React.useMemo(async () => {
-    if (getOneLoading === 'idle') {
-      await dispatch(getOneUserAsyncThunk())
+    if (cartState.getOneLoading === 'idle') {
+      await dispatch(getOneCartAsyncThunk())
     }
   }, [])
 
   const [activeStep, setActiveStep] = React.useState(0)
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setActiveStep(activeStep + 1)
   }
 
   const handleBack = () => {
     setActiveStep(activeStep - 1)
+  }
+
+  const handlePlaceOrder = async () => {
+    await dispatch(checkoutAsyncThunk({ ...dataCheckout }))
+    await dispatch(resetCount())
+    setActiveStep(activeStep + 1)
+  }
+
+  const getStepContent = (step: number) => {
+    switch (step) {
+      case 0:
+        return <AddressForm />
+      case 1:
+        return <PaymentForm />
+      case 2:
+        return <Review />
+      default:
+        throw new Error('Unknown step')
+    }
   }
 
   return (
@@ -72,7 +86,16 @@ export default function Checkout() {
               <Typography variant="h5" gutterBottom>
                 Thank you for your order.
               </Typography>
-              <Typography variant="subtitle1">Your order number is #2001539. We have emailed your order confirmation, and will send you an update when your order has shipped.</Typography>
+              {checkoutLoading === 'failed' ? (
+                <Typography variant="subtitle1">{checkoutError}</Typography>
+              ) : (
+                <Typography variant="subtitle1">
+                  Your order number is <strong>{orderId}</strong>. We have emailed your order confirmation, and will send you an update when your order has shipped.
+                </Typography>
+              )}
+              <Button variant="contained">
+                <Link to="/">Back Home</Link>
+              </Button>
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -83,9 +106,13 @@ export default function Checkout() {
                     Back
                   </Button>
                 )}
-                <Button variant="contained" onClick={handleNext} sx={{ mt: 3, ml: 1 }}>
-                  {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                </Button>
+                {activeStep === steps.length - 1 ? (
+                  <ModalCheckout handlePlaceOrder={handlePlaceOrder} open={open} handleOpen={handleOpen} handleClose={handleClose} />
+                ) : (
+                  <Button variant="contained" onClick={handleNext} sx={{ mt: 3, ml: 1 }}>
+                    Next
+                  </Button>
+                )}
               </Box>
             </React.Fragment>
           )}

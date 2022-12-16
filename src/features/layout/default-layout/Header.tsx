@@ -11,7 +11,7 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
-import { Mail as MailIcon, Notifications as NotificationsIcon, Menu as MenuIcon, PersonAdd, Settings, Logout } from '@mui/icons-material'
+import { Mail as MailIcon, Notifications as NotificationsIcon, Menu as MenuIcon, Logout } from '@mui/icons-material'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks'
 import { getAuthState, resetAuthState, signoutAsyncThunk } from '@/features/redux/slices/auth'
@@ -40,15 +40,13 @@ function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
 
   const dispatch = useAppDispatch()
-  const { dataGetOne, getOneLoading } = useAppSelector(getUserState)
+  const { dataGetOne } = useAppSelector(getUserState)
   const { count, countLoading } = useAppSelector(getCartState)
   const { auth } = useAppSelector(getAuthState)
 
-  React.useMemo(async () => {
-    if (getOneLoading === 'idle') {
-      await dispatch(getOneUserAsyncThunk())
-    }
+  React.useEffect(() => {
     if (auth) {
+      dispatch(getOneUserAsyncThunk())
       dispatch(countCartAsyncThunk())
     }
   }, [])
@@ -78,7 +76,6 @@ function ResponsiveAppBar() {
     dispatch(signoutAsyncThunk())
     dispatch(resetAuthState())
     removeItem('client')
-
     navigate('/')
   }
 
@@ -261,9 +258,11 @@ function ResponsiveAppBar() {
               </React.Fragment>
             </Box>
           ) : (
-            <Button variant="contained" color="secondary" startIcon={<LoginIcon />}>
-              <Link to="/signin">Login</Link>
-            </Button>
+            <Link to="/signin">
+              <Button variant="contained" color="secondary" startIcon={<LoginIcon />}>
+                Login
+              </Button>
+            </Link>
           )}
         </Toolbar>
       </Container>

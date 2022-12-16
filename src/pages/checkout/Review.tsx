@@ -6,23 +6,31 @@ import ListItemText from '@mui/material/ListItemText'
 import Grid from '@mui/material/Grid'
 import { useSelector } from 'react-redux'
 import { getCartItemsForReviews, getCartItemState } from '@/features/redux/slices/cart-item'
-import { useAppDispatch } from '@/features/hooks/reduxHooks'
+import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks'
 import _ from 'lodash'
-
-const addresses = ['1 MUI Drive', 'Reactville', 'Anytown', '99999', 'USA']
-const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
-]
+import { getCartState } from '@/features/redux/slices/cart'
+import { setDataItem, setIsPaid } from '@/features/redux/slices/checkout'
 
 export default function Review() {
   const dispatch = useAppDispatch()
   const { dataGetForReviews, getForReviewsLoading, getForReviewsError } = useSelector(getCartItemState)
+  const cartState = useAppSelector(getCartState)
 
-  React.useMemo(async () => {
-    await dispatch(getCartItemsForReviews())
+  React.useEffect(() => {
+    dispatch(getCartItemsForReviews())
+    dispatch(setIsPaid(false))
+    dispatch(
+      setDataItem({
+        subTotal: totalAmount,
+        itemDiscount: 0,
+        tax: 0,
+        shipping: 0,
+        total: totalAmount,
+        promo: '',
+        discount: 0,
+        grandTotal: 0,
+      })
+    )
   }, [])
 
   const initialValue = 0
@@ -42,6 +50,7 @@ export default function Review() {
       <Typography variant="h6" gutterBottom>
         Order summary
       </Typography>
+
       {getForReviewsLoading === 'succeeded' ? (
         <List disablePadding>
           {dataGetForReviews.map((product: any, index: number) => (
@@ -66,15 +75,15 @@ export default function Review() {
           <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
             Shipping
           </Typography>
-          <Typography gutterBottom>John Smith</Typography>
-          <Typography gutterBottom>{addresses.join(', ')}</Typography>
+          {/* <Typography gutterBottom>John Smith</Typography>
+          <Typography gutterBottom>{addresses.join(', ')}</Typography> */}
         </Grid>
         <Grid item container direction="column" xs={12} sm={6}>
           <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
             Payment details
           </Typography>
           <Grid container>
-            {payments.map((payment) => (
+            {/* {payments.map((payment) => (
               <React.Fragment key={payment.name}>
                 <Grid item xs={6}>
                   <Typography gutterBottom>{payment.name}</Typography>
@@ -83,7 +92,10 @@ export default function Review() {
                   <Typography gutterBottom>{payment.detail}</Typography>
                 </Grid>
               </React.Fragment>
-            ))}
+            ))} */}
+            <Grid item xs={6}>
+              <Typography gutterBottom>{cartState.payment}</Typography>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

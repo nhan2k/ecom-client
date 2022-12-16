@@ -12,6 +12,7 @@ import productReviewSlice from '@features/redux/slices/product-review'
 import ProductTagSlice from '@features/redux/slices/product-tag'
 import TransactionSlice from '@features/redux/slices/transaction'
 import cartItemSlice from '@features/redux/slices/cart-item'
+import checkoutSlice from '@features/redux/slices/checkout'
 
 const rootReducer = combineReducers({
   [authSlice.name]: authSlice.reducer,
@@ -27,5 +28,6 @@ const rootReducer = combineReducers({
   [ProductTagSlice.name]: ProductTagSlice.reducer,
   [TransactionSlice.name]: TransactionSlice.reducer,
   [cartItemSlice.name]: cartItemSlice.reducer,
+  [checkoutSlice.name]: checkoutSlice.reducer,
 })
 export default rootReducer

@@ -15,7 +15,7 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useAppSelector, useAppDispatch } from '@features/hooks/reduxHooks'
-import { setFirstName, setLastName, setEmail, setPassword, signupAsyncThunk } from '@features/redux/slices/auth'
+import { setFirstName, setLastName, setEmail, setPassword, signupAsyncThunk, getAuthState, setMobile } from '@features/redux/slices/auth'
 import { CircularProgress } from '@mui/material'
 
 const theme = createTheme()
@@ -24,10 +24,11 @@ interface IFormInput {
   lastName: string
   email: string
   password: string
+  mobile: string
 }
 interface ISignup {}
 const Signup: React.FunctionComponent<ISignup> = () => {
-  const { email, firstName, lastName, password, loadingSignup, errorSignup } = useAppSelector((state) => state.authSlice)
+  const { email, firstName, lastName, password, mobile, loadingSignup, errorSignup } = useAppSelector(getAuthState)
   const dispatch = useAppDispatch()
   const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setEmail(e.target.value))
@@ -41,6 +42,10 @@ const Signup: React.FunctionComponent<ISignup> = () => {
   const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setPassword(e.target.value))
   }
+  const onMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setMobile(e.target.value))
+  }
+
   const {
     register,
     handleSubmit,
@@ -105,7 +110,30 @@ const Signup: React.FunctionComponent<ISignup> = () => {
                     </Typography>
                   )}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
+                  <TextField
+                    {...register('mobile', {
+                      required: true,
+                      pattern: {
+                        value: /\S+@\S+\.\S+/,
+                        message: 'Entered value does not match mobile format',
+                      },
+                    })}
+                    fullWidth
+                    id="mobile"
+                    label="Phone Number"
+                    name="mobile"
+                    autoComplete="mobile"
+                    value={mobile}
+                    onChange={onMobileChange}
+                  />
+                  {errors.mobile && (
+                    <Typography variant="h6" color={'red'}>
+                      {errors.mobile.message || 'Enter your mobile'}
+                    </Typography>
+                  )}
+                </Grid>
+                <Grid item xs={6}>
                   <TextField
                     {...register('email', {
                       required: true,

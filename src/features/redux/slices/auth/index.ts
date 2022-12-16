@@ -38,6 +38,7 @@ const initialState: IAuthState = {
   lastName: '',
   email: '',
   password: '',
+  mobile: '',
   loading: 'idle',
   loadingSignup: 'idle',
   errorSignup: '',
@@ -71,6 +72,12 @@ const authSlice = createSlice({
       return {
         ...state,
         password: action.payload,
+      }
+    },
+    setMobile: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        mobile: action.payload,
       }
     },
     setAuth: (state, action: PayloadAction<boolean>) => {
@@ -166,5 +173,5 @@ const authSlice = createSlice({
 
 export { signinAsyncThunk, signoutAsyncThunk, signupAsyncThunk }
 export const getAuthState = (state: RootState) => state.authSlice
-export const { setFirstName, setLastName, setEmail, setPassword, resetAuthState, setLoading, setDecoded } = authSlice.actions
+export const { setFirstName, setLastName, setEmail, setPassword, setMobile, resetAuthState, setLoading, setDecoded } = authSlice.actions
 export default authSlice

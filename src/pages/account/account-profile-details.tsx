@@ -1,11 +1,13 @@
 import * as React from 'react'
-import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField } from '@mui/material'
+import { Box, Button, Card, CardContent, CardHeader, Divider, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@mui/material'
 import { useAppSelector } from '@/features/hooks/reduxHooks'
 import { getUserState } from '@/features/redux/slices/user'
+import { getCartState } from '@/features/redux/slices/cart'
 
 interface IAccountProfileDetails {}
 const AccountProfileDetails: React.FC<IAccountProfileDetails> = () => {
   const { dataGetOne, getOneLoading } = useAppSelector(getUserState)
+  const cartState = useAppSelector(getCartState)
 
   const handleChange = (event: React.BaseSyntheticEvent) => {}
 
@@ -38,13 +40,10 @@ const AccountProfileDetails: React.FC<IAccountProfileDetails> = () => {
               <Grid item md={6} xs={12}>
                 <TextField fullWidth label="Phone Number" name="phone" onChange={handleChange} type="number" value={dataGetOne.mobile || ''} variant="outlined" />
               </Grid>
-              <Grid item md={12} xs={12}>
-                <TextField fullWidth label="Address" name="country" onChange={handleChange} required value={dataGetOne.profile || ''} variant="outlined" />
-              </Grid>
             </Grid>
           </CardContent>
         ) : (
-          <></>
+          <React.Fragment />
         )}
         <Divider />
         <Box
@@ -56,6 +55,34 @@ const AccountProfileDetails: React.FC<IAccountProfileDetails> = () => {
         >
           <Button color="primary" variant="contained">
             Save details
+          </Button>
+        </Box>
+        <Divider />
+        <CardHeader subheader="The information can be edited" title="Address to received" />
+        <CardContent>
+          {cartState.getOneLoading === 'succeeded' ? (
+            <Grid container spacing={3}>
+              <Grid item md={12} xs={12}>
+                <Typography variant="h4" component="h4">
+                  <FormControlLabel value="address" control={<Radio />} label={<span style={{ fontSize: '2rem' }}>Default address</span>} checked disabled />
+                  {`${cartState.dataGetOne.address}`}
+                </Typography>
+              </Grid>
+            </Grid>
+          ) : (
+            <React.Fragment />
+          )}
+        </CardContent>
+        <Divider />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            p: 2,
+          }}
+        >
+          <Button color="primary" variant="contained">
+            Edit Address
           </Button>
         </Box>
       </Card>
