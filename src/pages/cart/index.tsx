@@ -6,6 +6,8 @@ import LocalMallIcon from '@mui/icons-material/LocalMall'
 import Items from './Items'
 import { Button, Stack } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useAppSelector } from '@/features/hooks/reduxHooks'
+import { getCartItemState } from '@/features/redux/slices/cart-item'
 
 interface ICartProps {}
 
@@ -13,6 +15,7 @@ const cx = classNames.bind(style)
 
 const Cart: React.FunctionComponent<ICartProps> = (props) => {
   const navigate = useNavigate()
+  const { getItemsForShop } = useAppSelector(getCartItemState)
 
   const handleCheckout = () => {
     navigate('/checkout')
@@ -33,7 +36,7 @@ const Cart: React.FunctionComponent<ICartProps> = (props) => {
         </div>
         <Items />
         <Stack spacing={2} direction="row" style={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained" size="large" onClick={handleCheckout}>
+          <Button variant="contained" size="large" onClick={handleCheckout} disabled={getItemsForShop?.length < 1}>
             Checkout
           </Button>
         </Stack>

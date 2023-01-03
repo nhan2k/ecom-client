@@ -32,13 +32,13 @@ const getCartItemsReviews = async (): Promise<IDataResponse> => {
   }
 }
 
-const createCartItem = async (productId: number): Promise<IDataResponse> => {
+const createCartItem = async ({ meta, productId }: { meta: any; productId: number }): Promise<IDataResponse> => {
   try {
     const user = getItem('client')
     const token = user !== null ? user.accessToken : ''
     const response = await privateHTTP.post(
       '/cart-item',
-      { productId },
+      { productId, meta },
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -20,9 +20,9 @@ const getCartItemsForReviews = createAsyncThunk(`${prefixType}/getForReviews`, a
     return thunkAPI.rejectWithValue(error)
   }
 })
-const createCartItemAsyncThunk = createAsyncThunk(`${prefixType}/create`, async (productId: number, thunkAPI) => {
+const createCartItemAsyncThunk = createAsyncThunk(`${prefixType}/create`, async ({ meta, productId }: { meta: any; productId: number }, thunkAPI) => {
   try {
-    const dataResponse = await createCartItem(productId)
+    const dataResponse = await createCartItem({ meta, productId })
     return dataResponse
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error)
@@ -47,7 +47,6 @@ const deleteCartItemAsyncThunk = createAsyncThunk(`${prefixType}/delete`, async 
 
 const initialState: ICartItemState = {
   dataGetAll: [],
-  getItemsForShop: {},
   dataGetForReviews: [],
   getAllLoading: 'idle',
   getForReviewsLoading: 'idle',

@@ -21,6 +21,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { createCartItemAsyncThunk } from '@/features/redux/slices/cart-item'
 import { countCartAsyncThunk } from '@/features/redux/slices/cart'
 import { getAuthState } from '@/features/redux/slices/auth'
+import { useForm } from 'react-hook-form'
 
 interface IProductDetail {}
 
@@ -33,9 +34,28 @@ const Item = styled(Paper)(({ theme }) => ({
   boxShadow: 'none',
 }))
 
+interface IFormInput {
+  Color?: string
+  Ram?: string
+  Storage?: string
+}
+
+type Key = 'Color' | 'Ram' | 'Storage'
+
+interface Meta {
+  key: Key
+  content: string
+}
+
 const ProductDetail: React.FunctionComponent<IProductDetail> = () => {
   const dispatch = useAppDispatch()
   let [searchParams, setSearchParams] = useSearchParams()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>()
 
   let id = Number(searchParams.get('id')) || 0
 
@@ -46,11 +66,11 @@ const ProductDetail: React.FunctionComponent<IProductDetail> = () => {
   const { dataGetOne, getOneLoading, getOneError } = useAppSelector(getProductState)
   const { auth } = useAppSelector(getAuthState)
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (data: any) => {
     if (!auth) {
       return navigate('/signin')
     }
-    await dispatch(createCartItemAsyncThunk(id))
+    await dispatch(createCartItemAsyncThunk({ meta: JSON.stringify(data), productId: id }))
     await dispatch(countCartAsyncThunk())
   }
 
@@ -77,84 +97,71 @@ const ProductDetail: React.FunctionComponent<IProductDetail> = () => {
             <React.Fragment />
           )}
           <Container>
-            {getOneLoading === 'succeeded' ? (
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid xs={5} sm={5} md={5} lg={5} xl={5}>
-                  <Item>
-                    <CardMedia
-                      component="img"
-                      width="100%"
-                      height="400px"
-                      image={dataGetOne.findProduct.image ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.findProduct.image}` : `${notFoundImg}`}
-                      alt="green iguana"
-                    />
-                  </Item>
-                </Grid>
-                <Grid xs={7} sm={7} md={7} lg={7} xl={7}>
-                  <Item>
-                    <FormControl>
-                      <Typography gutterBottom variant="h2" component="div" align="left">
-                        {dataGetOne.findProduct.title}
-                      </Typography>
+            <form onSubmit={handleSubmit(handleAddToCart)}>
+              {getOneLoading === 'succeeded' ? (
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                  <Grid xs={5} sm={5} md={5} lg={5} xl={5}>
+                    <Item>
+                      <CardMedia
+                        component="img"
+                        width="100%"
+                        height="400px"
+                        image={dataGetOne.findProduct.content ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${dataGetOne.findProduct.content}` : `${notFoundImg}`}
+                        alt="green iguana"
+                      />
+                    </Item>
+                  </Grid>
+                  <Grid xs={7} sm={7} md={7} lg={7} xl={7}>
+                    <Item>
+                      <FormControl>
+                        <Typography gutterBottom variant="h2" component="div" align="left">
+                          {dataGetOne.findProduct.title}
+                        </Typography>
 
-                      <Typography gutterBottom variant="h3" component="div" align="left">
-                        <TextRating value={dataGetOne.rating} />
-                      </Typography>
+                        <Typography gutterBottom variant="h3" component="div" align="left">
+                          <TextRating value={dataGetOne.rating} />
+                        </Typography>
 
-                      <Typography gutterBottom variant="h3" component="div" align="left">
-                        ${dataGetOne.findProduct.price}
-                      </Typography>
+                        <Typography gutterBottom variant="h3" component="div" align="left">
+                          ${dataGetOne.findProduct.price}
+                        </Typography>
 
-                      <Box style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <FormLabel style={{ fontSize: '3rem' }}>Meta key :</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group" style={{ marginLeft: '2rem' }}>
-                          {dataGetOne.findProduct.ProductMetaModels.map((element: any, index: number) => {
-                            return (
-                              <FormControlLabel
-                                value={element.key}
-                                control={
-                                  <Radio
-                                    sx={{
-                                      '& .MuiSvgIcon-root': {
-                                        fontSize: '3rem',
-                                      },
-                                    }}
-                                  />
-                                }
-                                label={
-                                  <Typography gutterBottom variant="h4" component="div" align="left" alignItems="center">
-                                    {element.key}
-                                  </Typography>
-                                }
-                                key={index}
-                                style={{ fontSize: '4rem' }}
-                              />
-                            )
-                          })}
-                        </RadioGroup>
-                      </Box>
-
-                      <Typography gutterBottom variant="h3" component="div" align="left">
-                        Tag title :
-                        {dataGetOne.findProduct.TagModels.map((element: any, index: number) => {
-                          return <React.Fragment key={index}>{element.title}</React.Fragment>
+                        {dataGetOne.findProduct.ProductMetaModels.map((element: Meta, index: number) => {
+                          let newContent = element.content.split(',').sort() || element.content
+                          return (
+                            <FormControl key={index}>
+                              <FormLabel style={{ textAlign: 'left' }}>{element.key}</FormLabel>
+                              <RadioGroup key={index} row aria-labelledby={element.key} name={element.key} defaultValue={newContent[0]}>
+                                {newContent.map((e: any, index: number) => (
+                                  <FormControlLabel key={index} value={e} control={<Radio {...register(`${element.key}`)} />} label={e} />
+                                ))}
+                              </RadioGroup>
+                            </FormControl>
+                          )
                         })}
-                      </Typography>
-                      <Stack direction="row" spacing={2}>
-                        <Button variant="outlined" startIcon={<ShoppingCartCheckoutIcon />} size="large" onClick={handleAddToCart}>
-                          Add to cart
-                        </Button>
-                        <Button variant="contained" size="large">
-                          Buy now
-                        </Button>
-                      </Stack>
-                    </FormControl>
-                  </Item>
+
+                        <Typography gutterBottom variant="h3" component="div" align="left">
+                          Tag title :
+                          {dataGetOne.findProduct.TagModels.map((element: any, index: number) => {
+                            return <React.Fragment key={index}>{element.title}</React.Fragment>
+                          })}
+                        </Typography>
+                        <Stack direction="row" spacing={2}>
+                          <Button type="submit" variant="outlined" startIcon={<ShoppingCartCheckoutIcon />} size="large" onClick={handleAddToCart}>
+                            Add to cart
+                          </Button>
+                          <Button variant="contained" size="large">
+                            Buy now
+                          </Button>
+                        </Stack>
+                      </FormControl>
+                    </Item>
+                  </Grid>
                 </Grid>
-              </Grid>
-            ) : (
-              <React.Fragment />
-            )}
+              ) : (
+                <React.Fragment />
+              )}
+            </form>
           </Container>
         </Box>
       )}

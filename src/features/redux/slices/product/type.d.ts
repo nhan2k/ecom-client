@@ -8,7 +8,7 @@ export interface IDataProduct {
   price?: number
   discount?: number
   shop?: number
-  content?: { img: string }
+  content?: string
   publishedAt?: Date
   startsAt?: Date
   endsAt?: Date

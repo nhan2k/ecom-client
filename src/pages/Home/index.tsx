@@ -75,11 +75,11 @@ const Home: React.FunctionComponent<IHome> = () => {
                                   component="img"
                                   height="200px"
                                   width="100%"
-                                  image={element.img !== 'undefined' ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.img}` : `${notFoundImg}`}
+                                  image={element.content ? `${process.env.REACT_APP_API_PUBLIC_IMAGE}/${element.content}` : `${notFoundImg}`}
                                   alt="green iguana"
                                 />
                                 <CardContent>
-                                  <Typography gutterBottom variant="h5" component="div">
+                                  <Typography gutterBottom variant="h5" component="div" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                                     {element.title}
                                   </Typography>
                                   <Typography gutterBottom variant="h6" component="div">

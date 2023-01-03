@@ -55,7 +55,7 @@ export default function Review() {
         <List disablePadding>
           {dataGetForReviews.map((product: any, index: number) => (
             <ListItem key={index} sx={{ py: 1, px: 0 }}>
-              <ListItemText primary={product.ProductModel.title} secondary={`Quantity: ${product.quantity}`} />
+              <ListItemText primary={`${product.ProductModel.title} (${product.content})`} secondary={`Quantity: ${product.quantity}`} />
               <Typography variant="body2">{`$${product.price * product.quantity}`}</Typography>
             </ListItem>
           ))}

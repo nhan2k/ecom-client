@@ -17,7 +17,7 @@ type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed'
 
 interface ICartItemState {
   dataGetAll: IDataCartItem[]
-  getItemsForShop: any
+  getItemsForShop?: []
   dataGetForReviews: IDataCartItem[]
   getAllLoading: TLoading
   getForReviewsLoading: TLoading
